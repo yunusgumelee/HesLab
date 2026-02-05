@@ -1,16 +1,15 @@
-function hesapla() function hesapla() {
-  let tutar = document.getElementById("tutar").value;
-  let vade = document.getElementById("vade").value;
-  let faiz = document.getElementById("faiz").value;
+function hesapla() {
+  const tutar = parseFloat(document.getElementById("tutar").value);
+  const vade = parseInt(document.getElementById("vade").value);
+  const faiz = parseFloat(document.getElementById("faiz").value);
 
-  if (tutar === "" || vade === "" || faiz === "") {
-    document.getElementById("sonuc").innerText =
-      "Lütfen tüm alanları doldurun.";
+  if (isNaN(tutar) || isNaN(vade) || isNaN(faiz)) {
+    document.getElementById("sonuc").innerText = "Tüm alanları doldur";
     return;
   }
 
-  let toplam = tutar * (1 + (faiz / 100) * vade);
-  let taksit = toplam / vade;
+  const toplam = tutar * (1 + (faiz / 100) * vade);
+  const taksit = toplam / vade;
 
   document.getElementById("sonuc").innerText =
     "Aylık Taksit: " + taksit.toFixed(2) + " TL";
