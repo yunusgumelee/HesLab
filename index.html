@@ -64,26 +64,21 @@ button {
 </div>
 
 <script>
-function hesapla(){
-  let tutar = Number(document.getElementById("tutar").value);
-  let faiz = Number(document.getElementById("faiz").value) / 100;
-  let vade = Number(document.getElementById("vade").value);
+async function kurGetir(){
+  try{
+    const r = await fetch("https://api.exchangerate.host/latest?base=USD&symbols=TRY,EUR");
+    const d = await r.json();
 
-  let toplam = tutar + (tutar * faiz * vade);
-  let aylik = toplam / vade;
-
-  document.getElementById("sonuc").innerText =
-   "Aylık ödeme: " + aylik.toFixed(2) + " TL";
+    document.getElementById("usd").innerText = d.rates.TRY.toFixed(2) + " TL";
+    document.getElementById("eur").innerText = (d.rates.TRY / d.rates.EUR).toFixed(2) + " TL";
+  } catch {
+    document.getElementById("usd").innerText = "Bağlanamadı";
+    document.getElementById("eur").innerText = "Bağlanamadı";
+  }
 }
 
-// canlı kur
-fetch("https://api.exchangerate.host/latest?base=USD&symbols=TRY,EUR")
-.then(r=>r.json())
-.then(d=>{
-  document.getElementById("usd").innerText = d.rates.TRY.toFixed(2)+" TL";
-  document.getElementById("eur").innerText = (d.rates.TRY/d.rates.EUR).toFixed(2)+" TL";
-});
+kurGetir();
 </script>
-
 </body>
 </html>
+
