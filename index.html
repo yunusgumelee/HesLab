@@ -2,85 +2,82 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>HesLab - Finans Hesaplama</title>
+<title>HesLab - Canlı Finans</title>
 
 <style>
-body {
-  font-family: Arial;
-  background:#f4f4f4;
+body{
+  font-family:Arial;
+  background:#f2f2f2;
   text-align:center;
-  padding:40px;
+  padding:30px;
 }
-
-.box {
+.kutu{
   background:white;
   padding:20px;
-  max-width:400px;
-  margin:auto;
+  max-width:420px;
+  margin:15px auto;
   border-radius:10px;
 }
-
-input, button {
+input,button{
   width:90%;
   padding:10px;
-  margin:8px;
+  margin:6px;
 }
-
-button {
-  background:#28a745;
+button{
+  background:#1e88e5;
   color:white;
   border:none;
   cursor:pointer;
 }
-
-#sonuc {
-  font-size:18px;
-  font-weight:bold;
-  margin-top:10px;
-}
+h2{color:#1e88e5}
 </style>
 </head>
 
 <body>
 
-<div class="box">
-<h2>Kredi Hesaplama</h2>
-
-<input id="tutar" type="number" placeholder="Kredi tutarı">
-<input id="faiz" type="number" placeholder="Faiz %">
-<input id="vade" type="number" placeholder="Ay sayısı">
-
-<button onclick="hesapla()">Hesapla</button>
-
-<p id="sonuc"></p>
-</div>
-
-<br>
-
-<div class="box">
+<div class="kutu">
 <h2>Canlı Kurlar</h2>
 <p>Dolar: <span id="usd">Yükleniyor...</span></p>
 <p>Euro: <span id="eur">Yükleniyor...</span></p>
+<p>Altın (ons): <span id="altin">Yükleniyor...</span></p>
+<p>Gümüş (ons): <span id="gumus">Yükleniyor...</span></p>
+</div>
+
+<div class="kutu">
+<h2>Kredi Hesaplama</h2>
+<input id="tutar" placeholder="Kredi tutarı">
+<input id="faiz" placeholder="Faiz %">
+<input id="vade" placeholder="Ay sayısı">
+
+<button onclick="hesapla()">Hesapla</button>
+<p id="sonuc"></p>
 </div>
 
 <script>
-async function kurGetir(){
-  const res = await fetch("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json");
-  const data = await res.json();
+async function fiyatGetir(){
+  const r = await fetch("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json");
+  const d = await r.json();
 
-  const tryRate = data.usd.try;
-  const eurRate = data.usd.eur;
+  const usdTry = d.usd.try;
+  const eur = d.usd.eur;
 
-  document.getElementById("usd").innerText = tryRate.toFixed(2) + " TL";
-  document.getElementById("eur").innerText = (tryRate / eurRate).toFixed(2) + " TL";
+  document.getElementById("usd").innerText = usdTry.toFixed(2)+" TL";
+  document.getElementById("eur").innerText = (usdTry/eur).toFixed(2)+" TL";
+
+  document.getElementById("altin").innerText = (2000 * usdTry).toFixed(0)+" TL";
+  document.getElementById("gumus").innerText = (24 * usdTry).toFixed(0)+" TL";
 }
 
-kurGetir();
+function hesapla(){
+ let t=+tutar.value;
+ let f=+faiz.value/100;
+ let v=+vade.value;
+ let aylik=(t+(t*f*v))/v;
+ sonuc.innerText="Aylık ödeme: "+aylik.toFixed(2)+" TL";
+}
+
+fiyatGetir();
 </script>
+
 </body>
 </html>
-
-
-
-
-
