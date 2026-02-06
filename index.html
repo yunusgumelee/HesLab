@@ -64,20 +64,22 @@ button {
 </div>
 
 <script>
-fetch("https://open.er-api.com/v6/latest/USD")
+const url = "https://api.exchangerate-api.com/v4/latest/USD";
+const proxy = "https://api.allorigins.win/raw?url=";
+
+fetch(proxy + url)
 .then(res => res.json())
 .then(data => {
   document.getElementById("usd").innerText = data.rates.TRY.toFixed(2) + " TL";
-  document.getElementById("eur").innerText = data.rates.EUR
-    ? (data.rates.TRY / data.rates.EUR).toFixed(2) + " TL"
-    : "Veri yok";
+  document.getElementById("eur").innerText = (data.rates.TRY / data.rates.EUR).toFixed(2) + " TL";
 })
 .catch(()=>{
-  document.getElementById("usd").innerText="Bağlanamadı";
-  document.getElementById("eur").innerText="Bağlanamadı";
+  document.getElementById("usd").innerText = "Veri yok";
+  document.getElementById("eur").innerText = "Veri yok";
 });
 </script>
 </body>
 </html>
+
 
 
