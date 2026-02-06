@@ -63,6 +63,16 @@ h2{color:#1e88e5}
 @media(max-width:600px){
  .kutu{max-width:95%}
  button,input{width:95%}
+ #owner{
+ position:fixed;
+ bottom:10px;
+ right:12px;
+ font-size:12px;
+ color:#777;
+ opacity:0.7;
+}
+.dark #owner{
+ color:#aaa;
 }
 </style>
 </head>
@@ -147,7 +157,9 @@ function darkToggle(){
 grafikBaslat();
 kurGetir();
 setInterval(kurGetir,10000);
+ <div id="owner">Owner: Yunus Gümele</div>
 </script>
 
 </body>
 </html>
+
