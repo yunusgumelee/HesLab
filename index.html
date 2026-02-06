@@ -64,27 +64,22 @@ button {
 </div>
 
 <script>
-const proxy = "https://api.allorigins.win/raw?url=";
-const url = "https://api.exchangerate-api.com/v4/latest/USD";
-
 async function kurGetir(){
-  try{
-    const r = await fetch(proxy + url);
-    const d = await r.json();
+  const res = await fetch("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json");
+  const data = await res.json();
 
-    document.getElementById("usd").innerText = d.rates.TRY.toFixed(2) + " TL";
-    document.getElementById("eur").innerText = (d.rates.TRY / d.rates.EUR).toFixed(2) + " TL";
-  } catch {
-    document.getElementById("usd").innerText = "Tekrar deneniyor...";
-    document.getElementById("eur").innerText = "Tekrar deneniyor...";
-  }
+  const tryRate = data.usd.try;
+  const eurRate = data.usd.eur;
+
+  document.getElementById("usd").innerText = tryRate.toFixed(2) + " TL";
+  document.getElementById("eur").innerText = (tryRate / eurRate).toFixed(2) + " TL";
 }
 
 kurGetir();
-setInterval(kurGetir, 30000); // her 30 saniyede bir yeniler
 </script>
 </body>
 </html>
+
 
 
 
