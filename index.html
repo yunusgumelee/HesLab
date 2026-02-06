@@ -2,23 +2,88 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>HesLab</title>
+<title>HesLab - Finans Hesaplama</title>
+
+<style>
+body {
+  font-family: Arial;
+  background:#f4f4f4;
+  text-align:center;
+  padding:40px;
+}
+
+.box {
+  background:white;
+  padding:20px;
+  max-width:400px;
+  margin:auto;
+  border-radius:10px;
+}
+
+input, button {
+  width:90%;
+  padding:10px;
+  margin:8px;
+}
+
+button {
+  background:#28a745;
+  color:white;
+  border:none;
+  cursor:pointer;
+}
+
+#sonuc {
+  font-size:18px;
+  font-weight:bold;
+  margin-top:10px;
+}
+</style>
 </head>
+
 <body>
 
-<h1>HesLab - Kredi Hesaplama</h1>
+<div class="box">
+<h2>Kredi Hesaplama</h2>
 
-<input type="number" id="tutar" placeholder="Kredi Tutarı">
-<br><br>
-<input type="number" id="vade" placeholder="Vade (ay)">
-<br><br>
-<input type="number" id="faiz" placeholder="Faiz (%)">
-<br><br>
+<input id="tutar" type="number" placeholder="Kredi tutarı">
+<input id="faiz" type="number" placeholder="Faiz %">
+<input id="vade" type="number" placeholder="Ay sayısı">
 
 <button onclick="hesapla()">Hesapla</button>
 
 <p id="sonuc"></p>
+</div>
 
-<script src="script.js"></script>
+<br>
+
+<div class="box">
+<h2>Canlı Kurlar</h2>
+<p>Dolar: <span id="usd">Yükleniyor...</span></p>
+<p>Euro: <span id="eur">Yükleniyor...</span></p>
+</div>
+
+<script>
+function hesapla(){
+  let tutar = Number(document.getElementById("tutar").value);
+  let faiz = Number(document.getElementById("faiz").value) / 100;
+  let vade = Number(document.getElementById("vade").value);
+
+  let toplam = tutar + (tutar * faiz * vade);
+  let aylik = toplam / vade;
+
+  document.getElementById("sonuc").innerText =
+   "Aylık ödeme: " + aylik.toFixed(2) + " TL";
+}
+
+// canlı kur
+fetch("https://api.exchangerate.host/latest?base=USD&symbols=TRY,EUR")
+.then(r=>r.json())
+.then(d=>{
+  document.getElementById("usd").innerText = d.rates.TRY.toFixed(2)+" TL";
+  document.getElementById("eur").innerText = (d.rates.TRY/d.rates.EUR).toFixed(2)+" TL";
+});
+</script>
+
 </body>
 </html>
