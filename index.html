@@ -3,75 +3,66 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HesLab - Canlı Finans</title>
+<title>HesLab Finans</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 body{
-  font-family:Arial;
-  background:#f2f2f2;
-  color:#000;
-  text-align:center;
-  padding:20px;
-  transition:0.3s;
+ font-family:Arial;
+ background:#f2f2f2;
+ text-align:center;
+ padding:20px;
+ transition:.3s;
 }
-
 .kutu{
-  background:white;
-  padding:20px;
-  max-width:420px;
-  margin:15px auto;
-  border-radius:12px;
-  box-shadow:0 0 10px rgba(0,0,0,.1);
+ background:#fff;
+ max-width:420px;
+ margin:15px auto;
+ padding:20px;
+ border-radius:12px;
+ box-shadow:0 0 10px rgba(0,0,0,.1);
 }
-
-input,button{
-  width:90%;
-  padding:10px;
-  margin:6px;
-  border-radius:6px;
-  border:1px solid #ccc;
+button,input{
+ width:90%;
+ padding:10px;
+ margin:6px;
+ border-radius:6px;
+ border:1px solid #ccc;
 }
-
 button{
-  background:#1e88e5;
-  color:white;
-  border:none;
-  cursor:pointer;
+ background:#1e88e5;
+ color:white;
+ border:none;
+ cursor:pointer;
 }
-
 h2{color:#1e88e5}
 
 #darkBtn{
-  position:fixed;
-  top:15px;
-  right:15px;
-  padding:10px 14px;
-  border-radius:20px;
-  background:#333;
-  color:white;
-  border:none;
-  cursor:pointer;
+ position:fixed;
+ top:15px;
+ right:15px;
+ background:#333;
+ color:white;
+ border:none;
+ padding:10px 14px;
+ border-radius:20px;
+ cursor:pointer;
 }
 
 /* Dark mode */
 .dark{
-  background:#121212;
-  color:white;
+ background:#121212;
+ color:white;
 }
-.dark .kutu{
-  background:#1e1e1e;
-}
-.dark h2{
-  color:#00bcd4;
-}
-.dark button{
-  background:#00bcd4;
-}
+.dark .kutu{background:#1e1e1e}
+.dark h2{color:#00bcd4}
+.dark button{background:#00bcd4}
 
 /* Mobile */
 @media(max-width:600px){
-  .kutu{max-width:95%}
-  input,button{width:95%}
+ .kutu{max-width:95%}
+ button,input{width:95%}
 }
 </style>
 </head>
@@ -84,32 +75,61 @@ h2{color:#1e88e5}
 <h2>Canlı Kurlar</h2>
 <p>Dolar: <span id="usd">Yükleniyor...</span></p>
 <p>Euro: <span id="eur">Yükleniyor...</span></p>
-<p>Altın (ons): <span id="altin">Yükleniyor...</span></p>
-<p>Gümüş (ons): <span id="gumus">Yükleniyor...</span></p>
+</div>
+
+<div class="kutu">
+<canvas id="grafik" height="200"></canvas>
 </div>
 
 <div class="kutu">
 <h2>Kredi Hesaplama</h2>
-<input id="tutar" placeholder="Kredi tutarı">
+<input id="tutar" placeholder="Tutar">
 <input id="faiz" placeholder="Faiz %">
-<input id="vade" placeholder="Ay sayısı">
+<input id="vade" placeholder="Ay">
 <button onclick="hesapla()">Hesapla</button>
 <p id="sonuc"></p>
 </div>
 
 <script>
-async function fiyatGetir(){
+let fiyatlar=[];
+let zamanlar=[];
+let chart;
+
+function grafikBaslat(){
+ const ctx=document.getElementById("grafik");
+ chart=new Chart(ctx,{
+  type:"line",
+  data:{
+   labels:zamanlar,
+   datasets:[{
+    label:"USD/TRY",
+    data:fiyatlar,
+    borderWidth:2,
+    tension:.3
+   }]
+  }
+ });
+}
+
+async function kurGetir(){
  const r=await fetch("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json");
  const d=await r.json();
 
  const usdTry=d.usd.try;
- const eur=d.usd.eur;
+ const eurRate=d.usd.eur;
 
  usd.innerText=usdTry.toFixed(2)+" TL";
- eur.innerText=(usdTry/eur).toFixed(2)+" TL";
+ eur.innerText=(usdTry/eurRate).toFixed(2)+" TL";
 
- altin.innerText=(2000*usdTry).toFixed(0)+" TL";
- gumus.innerText=(24*usdTry).toFixed(0)+" TL";
+ zamanlar.push(new Date().toLocaleTimeString());
+ fiyatlar.push(usdTry);
+
+ if(zamanlar.length>10){
+  zamanlar.shift();
+  fiyatlar.shift();
+ }
+
+ chart.update();
 }
 
 function hesapla(){
@@ -124,7 +144,9 @@ function darkToggle(){
  document.body.classList.toggle("dark");
 }
 
-fiyatGetir();
+grafikBaslat();
+kurGetir();
+setInterval(kurGetir,10000);
 </script>
 
 </body>
