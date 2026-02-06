@@ -7,62 +7,78 @@
 
 <style>
 body{
-  <button onclick="darkToggle()">🌙 Karanlık Mod</button>
   font-family:Arial;
   background:#f2f2f2;
-  @media (max-width: 600px) {
-  .kutu {
-    max-width: 95%;
-    padding: 15px;
-  }
-
-  input, button {
-    width: 95%;
-    font-size: 16px;
-  }
-
-  h2 {
-    font-size: 20px;
-  }
-}
+  color:#000;
   text-align:center;
-  padding:30px;
+  padding:20px;
+  transition:0.3s;
 }
+
 .kutu{
   background:white;
   padding:20px;
   max-width:420px;
   margin:15px auto;
-  border-radius:10px;
+  border-radius:12px;
+  box-shadow:0 0 10px rgba(0,0,0,.1);
 }
+
 input,button{
   width:90%;
   padding:10px;
   margin:6px;
+  border-radius:6px;
+  border:1px solid #ccc;
 }
+
 button{
   background:#1e88e5;
   color:white;
   border:none;
   cursor:pointer;
 }
+
 h2{color:#1e88e5}
-  .dark {
+
+#darkBtn{
+  position:fixed;
+  top:15px;
+  right:15px;
+  padding:10px 14px;
+  border-radius:20px;
+  background:#333;
+  color:white;
+  border:none;
+  cursor:pointer;
+}
+
+/* Dark mode */
+.dark{
   background:#121212;
   color:white;
 }
-
 .dark .kutu{
   background:#1e1e1e;
 }
-
+.dark h2{
+  color:#00bcd4;
+}
 .dark button{
   background:#00bcd4;
+}
+
+/* Mobile */
+@media(max-width:600px){
+  .kutu{max-width:95%}
+  input,button{width:95%}
 }
 </style>
 </head>
 
 <body>
+
+<button id="darkBtn" onclick="darkToggle()">🌙</button>
 
 <div class="kutu">
 <h2>Canlı Kurlar</h2>
@@ -77,24 +93,23 @@ h2{color:#1e88e5}
 <input id="tutar" placeholder="Kredi tutarı">
 <input id="faiz" placeholder="Faiz %">
 <input id="vade" placeholder="Ay sayısı">
-
 <button onclick="hesapla()">Hesapla</button>
 <p id="sonuc"></p>
 </div>
 
 <script>
 async function fiyatGetir(){
-  const r = await fetch("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json");
-  const d = await r.json();
+ const r=await fetch("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json");
+ const d=await r.json();
 
-  const usdTry = d.usd.try;
-  const eur = d.usd.eur;
+ const usdTry=d.usd.try;
+ const eur=d.usd.eur;
 
-  document.getElementById("usd").innerText = usdTry.toFixed(2)+" TL";
-  document.getElementById("eur").innerText = (usdTry/eur).toFixed(2)+" TL";
+ usd.innerText=usdTry.toFixed(2)+" TL";
+ eur.innerText=(usdTry/eur).toFixed(2)+" TL";
 
-  document.getElementById("altin").innerText = (2000 * usdTry).toFixed(0)+" TL";
-  document.getElementById("gumus").innerText = (24 * usdTry).toFixed(0)+" TL";
+ altin.innerText=(2000*usdTry).toFixed(0)+" TL";
+ gumus.innerText=(24*usdTry).toFixed(0)+" TL";
 }
 
 function hesapla(){
@@ -105,10 +120,12 @@ function hesapla(){
  sonuc.innerText="Aylık ödeme: "+aylik.toFixed(2)+" TL";
 }
 
+function darkToggle(){
+ document.body.classList.toggle("dark");
+}
+
 fiyatGetir();
 </script>
 
 </body>
 </html>
-
-
