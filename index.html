@@ -74,7 +74,6 @@ h2{color:#1e88e5}
 
 @media(max-width:600px){
  .kutu{max-width:95%}
- button,input{width:95%}
 }
 </style>
 </head>
@@ -90,7 +89,18 @@ h2{color:#1e88e5}
 </div>
 
 <div class="kutu">
-<canvas id="grafik" height="200"></canvas>
+<h2>Dolar Grafiği</h2>
+<canvas id="usdGrafik"></canvas>
+</div>
+
+<div class="kutu">
+<h2>Euro Grafiği</h2>
+<canvas id="eurGrafik"></canvas>
+</div>
+
+<div class="kutu">
+<h2>Altın Grafiği (ons)</h2>
+<canvas id="altinGrafik"></canvas>
 </div>
 
 <div class="kutu">
@@ -105,53 +115,62 @@ h2{color:#1e88e5}
 <div id="owner">Owner: Yunus Gümele</div>
 
 <script>
-let fiyatlar=[];
-let zamanlar=[];
-let chart;
+let times=[];
+let usdData=[], eurData=[], goldData=[];
+let usdChart, eurChart, goldChart;
 
 function grafikBaslat(){
- const ctx=document.getElementById("grafik");
- chart=new Chart(ctx,{
+ usdChart=new Chart(usdGrafik,{
   type:"line",
-  data:{
-   labels:zamanlar,
-   datasets:[{
-    label:"USD/TRY",
-    data:fiyatlar,
-    borderWidth:2,
-    tension:.3
-   }]
-  }
+  data:{labels:times,datasets:[{label:"USD/TRY",data:usdData,tension:.3}]}
+ });
+
+ eurChart=new Chart(eurGrafik,{
+  type:"line",
+  data:{labels:times,datasets:[{label:"EUR/TRY",data:eurData,tension:.3}]}
+ });
+
+ goldChart=new Chart(altinGrafik,{
+  type:"line",
+  data:{labels:times,datasets:[{label:"Altın (ons)",data:goldData,tension:.3}]}
  });
 }
 
-async function kurGetir(){
+async function veriGetir(){
  const r=await fetch("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json");
  const d=await r.json();
 
  const usdTry=d.usd.try;
- const eurRate=d.usd.eur;
+ const eurUsd=d.usd.eur;
+ const eurTry=usdTry/eurUsd;
 
  usd.innerText=usdTry.toFixed(2)+" TL";
- eur.innerText=(usdTry/eurRate).toFixed(2)+" TL";
+ eur.innerText=eurTry.toFixed(2)+" TL";
 
- zamanlar.push(new Date().toLocaleTimeString());
- fiyatlar.push(usdTry);
+ const altin=2000*usdTry;
 
- if(zamanlar.length>12){
-  zamanlar.shift();
-  fiyatlar.shift();
+ const time=new Date().toLocaleTimeString();
+
+ times.push(time);
+ usdData.push(usdTry);
+ eurData.push(eurTry);
+ goldData.push(altin);
+
+ if(times.length>12){
+  times.shift();
+  usdData.shift();
+  eurData.shift();
+  goldData.shift();
  }
 
- chart.update();
+ usdChart.update();
+ eurChart.update();
+ goldChart.update();
 }
 
 function hesapla(){
- let t=+tutar.value;
- let f=+faiz.value/100;
- let v=+vade.value;
- let aylik=(t+(t*f*v))/v;
- sonuc.innerText="Aylık ödeme: "+aylik.toFixed(2)+" TL";
+ let t=+tutar.value,f=+faiz.value/100,v=+vade.value;
+ sonuc.innerText="Aylık ödeme: "+((t+(t*f*v))/v).toFixed(2)+" TL";
 }
 
 function darkToggle(){
@@ -159,8 +178,8 @@ function darkToggle(){
 }
 
 grafikBaslat();
-kurGetir();
-setInterval(kurGetir,10000);
+veriGetir();
+setInterval(veriGetir,10000);
 </script>
 
 </body>
