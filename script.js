@@ -1,9 +1,9 @@
 function hesapla() {
-  const tutar = parseFloat(document.getElementById("tutar").value);
-  const vade = parseInt(document.getElementById("vade").value);
-  const faiz = parseFloat(document.getElementById("faiz").value);
+  const tutar = Number(document.getElementById("tutar").value);
+  const vade = Number(document.getElementById("vade").value);
+  const faiz = Number(document.getElementById("faiz").value);
 
-  if (isNaN(tutar) || isNaN(vade) || isNaN(faiz)) {
+  if (!tutar || !vade || !faiz) {
     document.getElementById("sonuc").innerText = "Tüm alanları doldur";
     return;
   }
@@ -12,5 +12,5 @@ function hesapla() {
   const taksit = toplam / vade;
 
   document.getElementById("sonuc").innerText =
-    "Aylık Taksit: " + taksit.toFixed(2) + " TL";
+    "Aylık taksit: " + taksit.toFixed(2) + " TL";
 }
