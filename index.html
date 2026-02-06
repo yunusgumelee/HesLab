@@ -64,21 +64,20 @@ button {
 </div>
 
 <script>
-async function kurGetir(){
-  try{
-    const r = await fetch("https://api.exchangerate.host/latest?base=USD&symbols=TRY,EUR");
-    const d = await r.json();
-
-    document.getElementById("usd").innerText = d.rates.TRY.toFixed(2) + " TL";
-    document.getElementById("eur").innerText = (d.rates.TRY / d.rates.EUR).toFixed(2) + " TL";
-  } catch {
-    document.getElementById("usd").innerText = "Bağlanamadı";
-    document.getElementById("eur").innerText = "Bağlanamadı";
-  }
-}
-
-kurGetir();
+fetch("https://open.er-api.com/v6/latest/USD")
+.then(res => res.json())
+.then(data => {
+  document.getElementById("usd").innerText = data.rates.TRY.toFixed(2) + " TL";
+  document.getElementById("eur").innerText = data.rates.EUR
+    ? (data.rates.TRY / data.rates.EUR).toFixed(2) + " TL"
+    : "Veri yok";
+})
+.catch(()=>{
+  document.getElementById("usd").innerText="Bağlanamadı";
+  document.getElementById("eur").innerText="Bağlanamadı";
+});
 </script>
 </body>
 </html>
+
 
